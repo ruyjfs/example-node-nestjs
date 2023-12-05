@@ -1,0 +1,63 @@
+version: '3.5'
+services:
+  # service-example-sso-web-build:
+  #   image: node:10
+  #   container_name: example-sso-web-build
+  #   user: "node"
+  #   working_dir: /home/node/app/assets
+  #   #    healthcheck:
+  #   #      test: ["CMD", "curl", "-sS", "http://localhost:8080"]
+  #   #      #      test: ["CMD-SHELL", "node /home/node/app/healthcheck.js"]
+  #   #      interval: 20s
+  #   #      timeout: 5s
+  #   #      retries: 3
+  #   volumes:
+  #     - .:/home/node/app
+  #   command: sh -c 'npm install && node node_modules/webpack/bin/webpack.js --mode development'
+  #   ports:
+  #     - "8081:8080"
+  #   environment:
+  #     - NODE_ENV=development
+  example-sso-node-nestjs-db-service:
+    image: postgres:alpine
+    container_name: example-sso-node-nestjs-db
+    environment:
+      POSTGRES_DB: example-sso-node-nestjs-db
+      POSTGRES_USER: example-sso-node-nestjs-usr
+      POSTGRES_PASSWORD: example-sso-node-nestjs-psw
+    ports:
+      - 5432:5432
+    tty: true
+    restart: always
+  # service-example-sso-api:
+  #   container_name: example-sso-api
+  #   build: docker/.
+  #   image: ruyjfs:elixir
+  #   working_dir: /var/www
+  #   volumes:
+  #     - .:/var/www/
+  #   environment:
+  #     - MIX_ENV=dev-docker
+  #   entrypoint: [ "/bin/sh" , "/var/www/docker/entrypoint/local.sh" ]
+  #   # command: sh -c 'mix local.hex && mix phx.server'
+  #   # command: sh -c 'mix phx.server'
+  #   # command: sh -c 'rm mix.lock && rm -rf _build/ && mix deps.get --all && mix phx.server'
+  #   command: mix phx.server
+  #   ports:
+  #     - 4000:4000
+  #   tty: true
+  #   restart: always
+  #   links:
+  #     - service-example-sso-db
+  #   depends_on:
+  #     - service-example-sso-db
+  example-sso-node-nestjs-adminer-service:
+    container_name: example-sso-node-nestjs-adminer
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    links:
+      - example-sso-node-nestjs-db-service
+    depends_on:
+      - example-sso-node-nestjs-db-service
